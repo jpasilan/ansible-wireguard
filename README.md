@@ -1,5 +1,7 @@
 # Ansible Wireguard
 
+![Ansible Lint](https://github.com/jpasilan/ansible-wireguard/workflows/Ansible%20Lint/badge.svg)
+
 This contains Ansible playbooks to install a WireGuard VPN server and generate the client configuration. The playbook that installs the VPN server performs the following:
 
 * Install the WireGuard packages and Linux headers when necessary.
