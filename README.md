@@ -16,7 +16,7 @@ The client playbook to generates a configuration that is already complete with t
 This was tested in the following 64-bit distros:
 
 * Debian 10, 9
-* Ubuntu 20,18, 16
+* Ubuntu 20, 18, 16
 
 # Setup
 
