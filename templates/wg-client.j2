@@ -1,0 +1,9 @@
+[Interface]
+PrivateKey = {{ client_private_key.stdout }}
+Address = {{ SERVER_IPV4 | ansible.netcommon.ipaddr((client_count.stdout|int + 2)) }}, {{ SERVER_IPV6 | ansible.netcommon.ipaddr((client_count.stdout|int + 2)) }}
+DNS = {{ DNS }}
+
+[Peer]
+PublicKey = {{ server_public_key.stdout }}
+AllowedIPs = 0.0.0.0/0, ::/0
+Endpoint = {{ ansible_default_ipv4.address }}:{{ WIREGUARD_PORT }}

@@ -1,0 +1,20 @@
+---
+- name: Run apt update and upgrade
+  apt:
+    update-cache: yes
+    upgrade: "yes"
+    cache_valid_time: 14400 # Valid for 4 hours.
+
+- name: Check if system reboot is required
+  stat:
+    path: /var/run/reboot-required
+  register: f
+
+- name: Reboot system when necessary
+  reboot:
+  when: f.stat.exists
+  register: reboot_task
+
+- name: Re-gather the facts after reboot
+  setup:
+  when: reboot_task is changed

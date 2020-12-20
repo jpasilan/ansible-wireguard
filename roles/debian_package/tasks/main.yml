@@ -1,0 +1,6 @@
+---
+- import_tasks: debian.yml
+  when: ansible_distribution == 'Debian'
+
+- import_tasks: ubuntu.yml
+  when: ansible_distribution == 'Ubuntu'

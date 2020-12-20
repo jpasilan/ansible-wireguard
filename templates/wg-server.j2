@@ -1,0 +1,7 @@
+[Interface]
+Address = {{ SERVER_IPV4 | ansible.netcommon.ipaddr('1') }}, {{ SERVER_IPV6 | ansible.netcommon.ipaddr('1') }}
+PostUp = iptables -A FORWARD -i {{ WIREGUARD_INTERFACE }} -j ACCEPT; iptables -t nat -A POSTROUTING -o {{ ansible_default_ipv4.interface }} -j MASQUERADE; ip6tables -A FORWARD -i {{ WIREGUARD_INTERFACE }} -j ACCEPT; ip6tables -t nat -A POSTROUTING -o {{ ansible_default_ipv4.interface }} -j MASQUERADE
+PostDown = iptables -D FORWARD -i {{ WIREGUARD_INTERFACE }} -j ACCEPT; iptables -t nat -D POSTROUTING -o {{ ansible_default_ipv4.interface }} -j MASQUERADE; ip6tables -D FORWARD -i {{ WIREGUARD_INTERFACE }} -j ACCEPT; ip6tables -t nat -D POSTROUTING -o {{ ansible_default_ipv4.interface }} -j MASQUERADE
+ListenPort = {{ WIREGUARD_PORT }}
+PrivateKey = {{ wireguard_private_key.stdout }}
+SaveConfig = true

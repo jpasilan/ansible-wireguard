@@ -1,0 +1,20 @@
+---
+- name: Install ufw
+  package:
+    name: ufw
+    state: present
+
+- name: Install WireGuard
+  package:
+    name: wireguard
+    state: present
+  when: ansible_kernel is version('5.6', '>=')
+  register: wireguard_56_install
+
+- name: Install WireGuard for kernel versions < 5.6
+  package:
+    name:
+      - wireguard-dkms
+      - wireguard-tools
+    state: present
+  when: wireguard_56_install is not changed

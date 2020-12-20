@@ -1,0 +1,23 @@
+---
+- name: Talk to WireGuard hosts to gather facts
+  hosts: wireguard
+  tasks:
+    - name: Classify hosts according to OS distribution
+      group_by:
+        key: OS_{{ ansible_os_family }}
+
+- name: Run Debian package updates
+  hosts: OS_Debian
+  gather_facts: False
+  roles:
+    - debian_package
+
+- name: Install WireGuard and dependencies
+  hosts: wireguard
+  gather_facts: False
+  vars_files:
+    - vars.yml
+  roles:
+    - install
+    - configure
+    - wrapup

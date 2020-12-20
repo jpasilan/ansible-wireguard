@@ -1,0 +1,7 @@
+---
+- name: Generate WireGuard client configuration
+  hosts: wireguard
+  vars_files:
+    - vars.yml
+  roles:
+    - client

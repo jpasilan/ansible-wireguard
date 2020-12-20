@@ -1,0 +1,19 @@
+---
+# This will install the latest version of WireGuard.
+- name: Create Debian unstable release fragment
+  copy:
+    mode: 0644
+    dest: /etc/apt/sources.list.d/unstable.list
+    content: |
+      deb http://deb.debian.org/debian/ unstable main
+
+# This allows for installing packages that are not in Debian stable,
+# while keeping the "stable" versions of everything else.
+- name: Add the Debian unstable release pin priority
+  copy:
+    mode: 0644
+    dest: /etc/apt/preferences.d/limit-unstable
+    content: |
+      Package: *
+      Pin: release a=unstable
+      Pin-Priority: 90

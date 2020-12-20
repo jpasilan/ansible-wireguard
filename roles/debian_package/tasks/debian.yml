@@ -1,0 +1,24 @@
+---
+- import_tasks: wireguard-unstable-release.yml
+
+- name: Run apt update and upgrade
+  apt:
+    update-cache: yes
+    upgrade: "yes"
+    cache_valid_time: 14400 # Valid for 4 hours.
+  register: upgrade_task
+
+- name: Reboot after an upgrade
+  reboot:
+  when: upgrade_task is changed
+  register: reboot_task
+
+- name: Gather facts again after a reboot
+  setup:
+  when: reboot_task is changed
+
+- name: Install Linux headers for kernel version < 5.6
+  package:
+    name: "linux-headers-{{ ansible_kernel }}"
+    state: present
+  when: ansible_kernel is version('5.6', '<')

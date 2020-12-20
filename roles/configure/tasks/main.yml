@@ -1,0 +1,4 @@
+---
+- import_tasks: wireguard.yml
+- import_tasks: ufw.yml
+- import_tasks: sysctl.yml

@@ -1,0 +1,11 @@
+---
+- name: Enable and start WireGuard service wg-quick@{{ WIREGUARD_INTERFACE }}
+  systemd:
+    name: wg-quick@{{ WIREGUARD_INTERFACE }}
+    daemon_reload: yes
+    state: restarted
+    enabled: yes
+
+- name: Reload ufw
+  ufw:
+    state: enabled

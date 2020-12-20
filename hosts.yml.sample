@@ -1,0 +1,9 @@
+all:
+  hosts:
+  children:
+    wireguard:
+      hosts:
+        [IP Address|FQDN]
+      vars:
+        ansible_user: [necessary for non-root host user]
+        ansible_become: [`yes` for non-root host user]

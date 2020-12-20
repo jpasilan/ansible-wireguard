@@ -1,0 +1,13 @@
+---
+- name: Allow incoming SSH and WireGuard traffic
+  ufw:
+    rule: allow
+    port: "{{ item.port }}"
+    proto: "{{ item.proto }}"
+  with_items:
+    - { port: 'ssh', proto: 'tcp' }
+    - { port: "{{ WIREGUARD_PORT }}", proto: 'udp' }
+
+- name: Disable UFW logging
+  ufw:
+    logging: "off"

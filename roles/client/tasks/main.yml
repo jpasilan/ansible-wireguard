@@ -1,0 +1,57 @@
+---
+- name: Create clients directory
+  file:
+    path: "{{ ansible_env.HOME }}/clients"
+    state: directory
+    mode: '0750'
+
+- name: Get the Wireguard client count
+  shell: cat /etc/wireguard/{{ WIREGUARD_INTERFACE }}.conf | grep -i "allowedips" | wc -l
+  register: client_count
+
+- name: Generate random string for the client filenames
+  command: openssl rand -hex 8
+  register: filename
+
+- name: Generate the client keys
+  shell: |
+    umask 077
+    wg genkey | tee {{ filename.stdout }}.priv | wg pubkey > {{ filename.stdout }}.pub
+  args:
+    chdir: /etc/wireguard
+    creates: "/etc/wireguard/{{ filename.stdout }}.pub"
+
+- name: Read the client private key
+  command: "cat /etc/wireguard/{{ filename.stdout }}.priv"
+  register: client_private_key
+
+- name: Read the client public key
+  command: "cat /etc/wireguard/{{ filename.stdout }}.pub"
+  register: client_public_key
+
+- name: Read the server public key
+  command: cat /etc/wireguard/publickey
+  register: server_public_key
+
+- name: Generate the client configuration from template
+  template:
+    src: templates/wg-client.j2
+    dest: "{{ ansible_env.HOME }}/clients/{{ filename.stdout }}.conf"
+    mode: 0600
+
+- name: Add client as peer to server
+  shell: >
+    wg set {{ WIREGUARD_INTERFACE }} peer {{ client_public_key.stdout }}
+    allowed-ips {{ SERVER_IPV4 | ansible.netcommon.ipaddr(client_count.stdout|int + 2) | ansible.netcommon.ipaddr('address') | ansible.netcommon.ipsubnet }},{{ SERVER_IPV6 | ansible.netcommon.ipaddr(client_count.stdout|int + 2) | ansible.netcommon.ipaddr('address') | ansible.netcommon.ipsubnet }}
+
+- name: Restart WireGuard service wg-quick@{{ WIREGUARD_INTERFACE }}
+  systemd:
+    name: wg-quick@{{ WIREGUARD_INTERFACE }}
+    daemon_reload: yes
+    state: restarted
+
+- name: Download client configuration to local
+  fetch:
+    src: "{{ ansible_env.HOME }}/clients/{{ filename.stdout }}.conf"
+    dest: "{{ LOCAL_CLIENT_PATH }}/"
+    flat: yes
