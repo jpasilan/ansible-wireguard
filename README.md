@@ -11,7 +11,7 @@ This contains Ansible playbooks to install a WireGuard VPN server and generate t
 * Add WireGuard as a systemd service.
 * Update sysctl to enable IPv4/IPv6 forwarding.
 
-The client playbook to generates a configuration that is already complete with the necessary crypto keys and addresses.
+The client playbook generates a configuration file that is already complete with the necessary crypto keys and addresses. It also adds the client as peer to the server.
 
 # Works In
 
@@ -27,7 +27,7 @@ Also, create the `clients` directory in the parent directory. This is where the 
 
 # Usage
 
-Run first the playbook for the WireGuard server, like so:
+Install first the WireGuard VPN server running the playbook like so:
 
 `ansible-playbook wg-server-playbook.yml`
 
